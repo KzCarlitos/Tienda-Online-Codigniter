@@ -1,0 +1,28 @@
+<productos>
+  <producto>
+    
+    <Nombre>Producto de XML 1</Nombre>
+    <Precio>92</Precio>
+    <Imagen>https://mocubo.es/pimages/800x600/2513-skin-protector-de-vinilo-para-iphone-4-dorado.jpeg</Imagen>
+    <IVA>21</IVA>
+    <Descripcion>Descripcion 1</Descripcion>   
+    <Stock>876</Stock>
+    <Oculto>0</Oculto>
+    <Destacado>1</Destacado>
+    <idCategoria>1</idCategoria>
+
+  </producto>
+  <producto>
+
+    <Nombre>Producto de XML 2</Nombre>
+    <Precio>30</Precio>
+    <Imagen>https://mocubo.es/pimages/800x600/6793-protector-de-pantalla-itouch-2-3.jpeg</Imagen>
+    <IVA>21</IVA>
+    <Descripcion>Descripcion 2</Descripcion>   
+    <Stock>876</Stock>
+    <Oculto>0</Oculto>
+    <Destacado>1</Destacado>
+    <idCategoria>1</idCategoria>
+
+  </producto>
+</productos>
