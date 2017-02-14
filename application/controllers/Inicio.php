@@ -12,7 +12,9 @@ class Inicio extends CI_Controller{
 	
 
 	}
-
+	/*Se encarga de cargar las distintas vista con los parametros correspondiente.
+	*@Param Contenido son los datos pasados a las distintas vistas.
+	*/
 	public function cargaVista($contenido){
 		$this->load->view('header');
 		 $this->load->view('menu');
@@ -20,6 +22,11 @@ class Inicio extends CI_Controller{
 		 $this->load->view('pie');
 	}
 
+
+	/*----------------------------------------FUNCIONES RELACIONADA CON LA TIENDA, PRODUCTOS Y CATEGORIAS.---------------------------------------*/
+
+	/*Carga todos los productos que sean destacado y realiza la paginacion de ellos.
+	*/
 	public function Destacados(){
 		$this->load->model("M_Tienda","tienda");
 		$pages=3; //Número de registros mostrados por páginas
@@ -47,7 +54,8 @@ class Inicio extends CI_Controller{
 	}
 
 
-
+	/*Realiza la carga de todas las categorias que existen.
+	*/
 	public function Categoria(){
 		$this->load->model("M_Tienda","tienda");
 		$categoria=$this->tienda->Categoria();
@@ -60,6 +68,9 @@ class Inicio extends CI_Controller{
 	}
 
 
+	/*Realiza la carga de la categoria selecionada
+	*@Param idcategoria es el identificador de la categoria.
+	*/
 	public function Ver_Categoria($idCategoria){
 		$this->load->model("M_Tienda","tienda");
 		$productos=$this->tienda->Ver_Categoria($idCategoria);
@@ -69,10 +80,11 @@ class Inicio extends CI_Controller{
 	 	
 	 	$this->cargaVista(Array('contenido' => $contenido));
 
-
 	}
 
-	
+	/*Realiza la carga del producto selecionado
+	*@Param idproducto es el identificador del producto seleccionado.
+	*/
 	public function Ver_Producto($idProducto){
 		$this->load->model("M_Tienda","tienda");
 		$detalles=$this->tienda->Ver_Producto($idProducto);
@@ -81,6 +93,17 @@ class Inicio extends CI_Controller{
 		$this->cargaVista(Array('contenido'=>$contenido));
 	}
 
+
+
+	/*--------------------------------------------------------------------O-------------------------------------------------------------*/
+
+
+
+	/*-------------------------------------------- FUNCIONES SOBRE LOS USUARIOS ------------------------------------------*/
+
+
+	/*Se encarga de comprobar el acceso a la web y cargar los datos del usuario
+	*/
 	public function Loguearse(){
 		$this->load->model("M_Tienda","tienda");
 		
@@ -117,6 +140,8 @@ class Inicio extends CI_Controller{
 		
 	}
 
+	/*Se encarga de salir de la sesion del usuario y borrar los datos de la misma.
+	*/
 	public function Salir(){
 		$this->load->model("M_Tienda","tienda");
 		
@@ -126,6 +151,8 @@ class Inicio extends CI_Controller{
 		$this->index();
 	}
 
+	/*Se encarga del registro de un nuevo usuario, recoge los datos y los envia a la base de datos.
+	*/
 	public function Registro(){
 		$this->load->model("M_Tienda","tienda");
 
@@ -185,16 +212,12 @@ class Inicio extends CI_Controller{
 				$this->session->set_userdata('Usuario_Valido', true);
 				$this->session->set_userdata('Datos_Usuario', $DatosUser);
 				$this->index();
-					
-				
-				
-
-
 		}
 
 	}
 
-
+	/*Se encarga de recoger los datos que han sido modificados y actulizarlo en la base de datos.
+	*/
 	public function Modificar(){
 		$this->load->model("M_Tienda","tienda");
 
@@ -251,16 +274,42 @@ class Inicio extends CI_Controller{
 				$this->session->unset_userdata('Datos_Usuario');
 				$this->session->set_userdata('Datos_Usuario', $DatosUser);
 				$this->index();
-				//$this->Modificar();
-
-
 		}
 
 		
 	}
 
-// Seguir aqui.--->
+	/* Se encarga de dar de baja al usuario en nuestra web.
+	*@Param idusuario es el identificador por el cual sabemos que usuario es.
+	*/
+	public function DarBaja($idUsuario){
+		$this->load->model("M_Tienda","tienda");
+		$this->tienda->DarBaja($idUsuario);
+		$this->Salir();
 
+	}
+
+
+	/*Devuelve el nombre de la porvincia
+	*@Param idprovincia identifica la provincia de la que devuelve el nombre.
+	*@Return Devuelve el nombre de la provincia.
+	*/
+	public function Nombre_Provincia($idProvincia){
+		$this->load->model("M_Tienda","tienda");
+		$nombre = $this->tienda->Devuelve_NombreP($idProvincia);
+		return $nombre;
+	}
+
+	/*------------------------------------------------------------O----------------------------------------------------------------*/
+
+
+
+
+
+	/*-------------------------------------------- FUNCIONES SOBRE EL CARRITO DE LA TIENDA ----------------------------------------*/
+
+	/*Se encarga de visualizar el contenido del carrito en caso de que exista.
+	*/
 	public function Carrito(){
 		$this->load->model("M_Tienda","tienda");
 		if(isset($_SESSION['carrito'])){
@@ -275,7 +324,9 @@ class Inicio extends CI_Controller{
 
 	}
 
-
+	/*Es la funcion encargada de añadir un producto al carrito.
+	*@Param id producto identifica el producto para poder añadirlo al carrito.
+	*/
 	public function Comprar($idProducto){
 
 		// primero se añade al carrito y luego se muestra el carrito.
@@ -294,25 +345,26 @@ class Inicio extends CI_Controller{
 		);
 		
 
-		$this->carrito->add($articulo);
-		//echo "<pre>".print_r($this->carrito->get_content(),true)."</pre>";
-		
+		$this->carrito->add($articulo);		
 		$contenido=$this->load->view('V_Carrito',Array('carrito'=>$this->carrito) ,true);
 		$this->cargaVista(Array('contenido'=>$contenido));
 
 	}
 
-
+	/*Se encarga de eliminar un producto del carrito.
+	*@Param id es el identificador del producto creado cuando se añadio al carrito.
+	*/
 	public function BorraCarrito($id){
 		$this->load->model("M_Tienda","tienda");
 		$this->carrito->remove_producto($id);
 		
 		$contenido=$this->load->view('V_Carrito',Array('carrito'=>$this->carrito) ,true);
 		$this->cargaVista(Array('contenido'=>$contenido));
-
-
 	}
 
+
+	/*Se encarga de vaciar todo el contenido que existe en el carrito.
+	*/
 	public function BorraTodoCarrito(){
 		$this->load->model("M_Tienda","tienda");
 		$this->carrito->Destroy();
@@ -323,25 +375,9 @@ class Inicio extends CI_Controller{
 	}
 
 
-
-	public function DarBaja($idUsuario){
-		$this->load->model("M_Tienda","tienda");
-		$this->tienda->DarBaja($idUsuario);
-		$this->Salir();
-
-	}
-
-
-	public function Pedidos(){
-		$this->load->model("M_Tienda","tienda");
-		$DPedidos=$this->tienda->Ver_Pedidos($_SESSION['idUser']);
-
-		$contenido=$this->load->view('V_Pedidos',Array('ListaP'=>$DPedidos) ,true);
-		$this->cargaVista(Array('contenido'=>$contenido));
-	}
-
-
-
+	/*Es la funcion encargada de finalizar una compra, almacena todos los productos que se encuentre en el carrito
+	* y se envia por correo los detalles del pedido.
+	*/
 
 
 	public function FinalizarCompra(){
@@ -401,35 +437,19 @@ class Inicio extends CI_Controller{
 				$this->email->message($html);
 				
 				$this->email->send();
-				
-
-				//echo $this->email->print_debugger();*/
-				
-
-
 		 	}
 		 	else
 		 	{
-
-				//$contenido=$this->load->view('V_Login',array('acceder'=>"") ,true);
-				//$this->cargaVista(Array('contenido'=>$contenido));
 				redirect('Inicio/Loguearse');
-
 			}
-
-
-
 	}
 
-	public function Ver_ArticulosP($idPedido){
-		$this->load->model("M_Tienda","tienda");
-		$articulos=$this->tienda->Ver_Articulos($idPedido);
-
-		$contenido=$this->load->view('V_Articulos',Array('Articulos'=>$articulos) ,true);
-		$this->cargaVista(Array('contenido'=>$contenido));
 
 
-	}
+
+	/*Elimina un producto que este añadido en el carrito.
+	*@Param idProducto es el identificador del producto que vamos a quitar.
+	*/
 
 	public function Quitar($idProducto){
 
@@ -449,13 +469,33 @@ class Inicio extends CI_Controller{
 		
 
 		$this->carrito->remove_items($articulo);
-		//echo "<pre>".print_r($this->carrito->get_content(),true)."</pre>";
 		
 		$contenido=$this->load->view('V_Carrito',Array('carrito'=>$this->carrito) ,true);
 		$this->cargaVista(Array('contenido'=>$contenido));
 	}
 
 
+	/*-------------------------------------------------------------O--------------------------------------------------------*/
+
+
+
+	/*-------------------------------------------------FUNCIONES SOBRE PEDIDOS ------------------------------------------------*/
+	
+	
+
+	/*carga la vista donde se muestra todos los pedidos del usuario.
+	*/
+	public function Pedidos(){
+		$this->load->model("M_Tienda","tienda");
+		$DPedidos=$this->tienda->Ver_Pedidos($_SESSION['idUser']);
+
+		$contenido=$this->load->view('V_Pedidos',Array('ListaP'=>$DPedidos) ,true);
+		$this->cargaVista(Array('contenido'=>$contenido));
+	}
+
+	/*Pone el estado de un pedido en cancelado.
+	*@Param idpedido es el identificador del pedido que se va poner en cancelado.
+	*/
 	public function Anular_Pedido($idPedido){
 
 		$this->load->model("M_Tienda","tienda");
@@ -466,12 +506,11 @@ class Inicio extends CI_Controller{
 
 	}
 
-	public function Nombre_Provincia($idProvincia){
-		$this->load->model("M_Tienda","tienda");
-		$nombre = $this->tienda->Devuelve_NombreP($idProvincia);
-		return $nombre;
-	}
 
+	
+	/*Es la encargada de visualizar la factura en PDF
+	*@Param idpedido es el identificador del pedido.
+	*/
 	public function Ver_Pdf($idPedido){
 		$this->load->model("M_Tienda","tienda");
 		$pedido=$this->tienda->Ver_Pedidos($_SESSION['idUser']);
@@ -557,7 +596,27 @@ class Inicio extends CI_Controller{
 		$pdf->Output('I','Factura-'.$idPedido);
 	}
 
+	/*Muestar los articulos que tiene un pedido.
+	*@Param idpedido es el identificador del pedido.
+	*/
+	public function Ver_ArticulosP($idPedido){
+		$this->load->model("M_Tienda","tienda");
+		$articulos=$this->tienda->Ver_Articulos($idPedido);
 
+		$contenido=$this->load->view('V_Articulos',Array('Articulos'=>$articulos) ,true);
+		$this->cargaVista(Array('contenido'=>$contenido));
+
+	}
+	
+
+
+	/*---------------------------------------------------------------O---------------------------------------------------------------*/
+
+
+	/*--------------------------------------------------------------FUNCIONES SOBRE USUARIOS-------------------------------------------------*/
+
+	/*Se encarga de habilitar la opcion de poder recupera la contraseña para el usuario.
+	*/
 	public function Recordar_Contrasena(){
 		$this->load->model('M_Tienda','tienda');
 		$this->form_validation->set_rules('email', 'Correo', 'required|valid_email|trim');
@@ -571,7 +630,7 @@ class Inicio extends CI_Controller{
 		{
 			$Correo=$this->input->post('email');
 			$DATOS=$this->tienda->Datos_UserEmail($Correo);
-			//echo "<pre>".print_r($DATOS)."</pre>";
+			
 			if($DATOS){
 				
 				$this->load->library('email');
@@ -584,20 +643,25 @@ class Inicio extends CI_Controller{
 				$this->email->message(base_url()."index.php/Inicio/Cambia_Pass/".$DATOS->idUsuarios."/".sha1($DATOS->Nombre.date("d-m-Y")));
 				
 				$this->email->send();
-				$this->load->view('V_Recordar',array('enviado'=>''),true);
+				$this->load->view('V_Recordar',array('enviado'=>''));
 				
-			}else{$this->load->view('V_Recordar',array('enviado'=>''),true);}
+			}
+			else
+			{	
+				
+				$this->load->view('V_Recordar',array('enviado'=>''));
+			}
 		}
 	}
 
-		public function Cambia_Pass(){
+	public function Cambia_Pass(){
 			$this->load->model('M_Tienda','tienda');
 			$id=$this->uri->segment(3);
 			$sha=$this->uri->segment(4);
 			$DATOS=$this->tienda->Datos_Usuarios($id);
-			//echo $sha;
+			
 			if($sha==sha1($DATOS->Nombre.date("d-m-Y"))){
-				//echo $sha;
+			
 				$this->load->view('V_CambioPass');
 			}
 			else
@@ -607,10 +671,11 @@ class Inicio extends CI_Controller{
 
 			//$this->load->view('V_CambioPass');
 
-		}
+	}
 		
 		
-
+	/*Carga la pagina para que el usuario pueda cambiar la contraseña y añadir una nueva.
+	*/
 	public function Cambiar_Pass(){
 			$this->load->model("M_Tienda","tienda");
 				$id=$this->uri->segment(3);
@@ -620,7 +685,6 @@ class Inicio extends CI_Controller{
 				$this->tienda->CambiaPass($id,$pass);
 				$this->load->view('V_CambioPass',array('cambio'=>''));
 				
-
 	}
 
 	

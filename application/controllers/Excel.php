@@ -76,7 +76,9 @@
         }
 
 
-
+        /*
+        * Se encarga de leer un archivo excel y importar los datos a la base de datos.
+        */
         public function import(){
         	$this->load->view('V_ImExcel');
         }

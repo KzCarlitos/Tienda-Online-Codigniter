@@ -53,6 +53,7 @@
     <?php echo validation_errors(); ?>
        <?php if (isset($enviado)): ?>
          <h3>El correo se ha enviado correctamente.</h3>
+         <p>Pincha aqui para ir a la <?=anchor('Inicio/', 'tienda');?><tienda</p>
        <?php endif; ?>
   </div>
 

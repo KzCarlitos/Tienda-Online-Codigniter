@@ -2,7 +2,7 @@
 class XML extends CI_Controller {
     
     /**
-     * Exportación de XML
+     * Exportación de datos en formatos xml
      */
     public function export() {
         $this->load->model('M_Tienda','tienda');
@@ -53,12 +53,14 @@ class XML extends CI_Controller {
     
     }
 
-
+    /*Carga la vista para realizar la importacioon de datos XML
+    */
     public function import() {
         $this->load->view("V_ImXml.php");
     }
 
-
+    /*Es la funcion que se encarga de la traducion del fichero xml para ser importados en la base de datos.
+    */
      public function Carga_Import() {
         $this->load->model('M_Tienda','tienda');
         $archivo = $_FILES['xml']['name'];
