@@ -88,8 +88,8 @@ class Inicio extends CI_Controller{
 	public function Ver_Producto($idProducto){
 		$this->load->model("M_Tienda","tienda");
 		$detalles=$this->tienda->Ver_Producto($idProducto);
-
-		$contenido=$this->load->view('V_Detalles',Array('detalles'=>$detalles),true);
+		$disabled = (!$detalles->Stock) ? 'disabled' : '';
+		$contenido=$this->load->view('V_Detalles',Array('detalles'=>$detalles, 'disabled' => $disabled),true);
 		$this->cargaVista(Array('contenido'=>$contenido));
 	}
 
@@ -221,11 +221,11 @@ class Inicio extends CI_Controller{
 	public function Modificar(){
 		$this->load->model("M_Tienda","tienda");
 
-		$this->form_validation->set_rules('Nombre', 'Nombre', 'required');
+		$this->form_validation->set_rules('Nombre', 'Nombre', 'required|is_unique[usuarios.Nombre]');
 		$this->form_validation->set_rules('Apellidos', 'Apellidos', 'required');
-		$this->form_validation->set_rules('DNI', 'DNI', 'required|trim|valid_dni');
+		//$this->form_validation->set_rules('DNI', 'DNI', 'required|trim|valid_dni|is_unique[usuarios.DNI]');
 		$this->form_validation->set_rules('Correo', 'Correo', 'required|valid_email|trim');
-		$this->form_validation->set_rules('Usuario', 'Usuario', 'required');
+		$this->form_validation->set_rules('Usuario', 'Usuario', 'required|is_unique[usuarios.Correo]');
 		//$this->form_validation->set_rules('Contraseña','Contraseña','required|trim');
 		$this->form_validation->set_rules('CP', 'CP', 'required|trim|min_length[5]');
 		$this->form_validation->set_rules('Direccion', 'Direccion', 'required');
@@ -235,6 +235,7 @@ class Inicio extends CI_Controller{
 		$this->form_validation->set_message('min_length', 'El campo %s debe ser de al menos %s carácteres');
 		$this->form_validation->set_message('valid_email', 'Debe escribir una dirección de email correcta');
 		$this->form_validation->set_message('valid_dni', 'El %s no tiene el formato valido');
+		$this->form_validation->set_message('is_unique', 'El %s ya esta registrado');
 
 
 
@@ -413,13 +414,14 @@ class Inicio extends CI_Controller{
 					$this->tienda->Insertar_Articulos($articulo);
 					
 				}
+				
 				$dfactura=Array('direccion'=>$Datos->Direccion,
 					'cp'=>$Datos->CP,
 					'Provincia'=>$Datos->idProvincia,
 					'idusuario'=>$_SESSION['idUser']);
 				$factura=$this->tienda->LineasPedido($idPedido);
 				
-				
+				$nombreFichero=$this->Genera_Pdf($idPedido,'F');
 				
 				$html=$this->load->view('V_EmailPedido',Array('factura'=>$factura,'idPedido'=>$idPedido,'dfactura'=>$dfactura, 'p_final' => 0),true);
 				//echo $html;
@@ -429,12 +431,13 @@ class Inicio extends CI_Controller{
 
 				$this->load->library('email');
 				
-				$this->email->from('aula4@iessansebastian,com', 'Tienda');
+				$this->email->from('aula4@iessansebastian.com', 'Tienda');
 				$this->email->to($Datos->Correo);
 				
 				
 				$this->email->subject('Factura Tu tienda online');
 				$this->email->message($html);
+				$this->email->attach($nombreFichero);
 				
 				$this->email->send();
 		 	}
@@ -511,7 +514,7 @@ class Inicio extends CI_Controller{
 	/*Es la encargada de visualizar la factura en PDF
 	*@Param idpedido es el identificador del pedido.
 	*/
-	public function Ver_Pdf($idPedido){
+	public function Genera_Pdf($idPedido,$salida='I'){
 		$this->load->model("M_Tienda","tienda");
 		$pedido=$this->tienda->Ver_Pedidos($_SESSION['idUser']);
 		$nombreP=$this->Nombre_Provincia($pedido[0]['Provincia']);
@@ -592,8 +595,11 @@ class Inicio extends CI_Controller{
 		$pdf->SetXY(135, 246);
 		
 		$pdf->Cell(26,10,'Total: '.$total,0,2,'R');
-		
-		$pdf->Output('I','Factura-'.$idPedido);
+
+		$nombreFichero=tempnam('temp/', 'Factura-').'.pdf';
+
+		$pdf->Output($salida,$nombreFichero);
+		if($salida=='F'){return $nombreFichero;}
 	}
 
 	/*Muestar los articulos que tiene un pedido.

@@ -31,65 +31,66 @@
   <!-- Form Name -->
   <legend style="margin-left: 2%;">Datos Personales</legend>
 
-   <?php echo validation_errors(); ?>
+   
 
        
 <?php foreach ($Datos as  $valor) :?>
 
-  <input id="ID" name="ID" type="hidden" placeholder="ID" class="form-control input-md" required="" value="<?=$valor->idUsuarios?>">
+  <input id="ID" name="ID" type="hidden" placeholder="ID" class="form-control input-md"  value="<?=$valor->idUsuarios?>">
   <!-- Text input-->
   <div class="form-group">
     <label class="col-md-4 control-label" for="Nombre">Nombre</label>  
-    <div class="col-md-5">
-    <input id="Nombre" name="Nombre" type="text" placeholder="Nombre" class="form-control input-md" required="" value="<?=$valor->Nombre?>">
+    <div class="col-md-4">
+    <input id="Nombre" name="Nombre" type="text" placeholder="Nombre" class="form-control input-md"  value="<?=$valor->Nombre?>">
       
+    </div>
+    <div class="col-md-4">
+      <?php  echo form_error('Nombre');?>
     </div>
   </div>
 
   <!-- Text input-->
   <div class="form-group">
     <label class="col-md-4 control-label" for="Apellidos">Apellidos</label>  
-    <div class="col-md-5">
-    <input id="Apellidos" name="Apellidos" type="text" placeholder="Apellidos" class="form-control input-md" required="" value="<?=$valor->Apellidos?>">
+    <div class="col-md-4">
+    <input id="Apellidos" name="Apellidos" type="text" placeholder="Apellidos" class="form-control input-md"  value="<?=$valor->Apellidos?>">
       
+    </div>
+    <div class="col-md-4">
+      <?php  echo form_error('Apellidos');?>
     </div>
   </div>
 
 <div class="form-group">
     <label class="col-md-4 control-label" for="DNI">DNI</label>  
-    <div class="col-md-5">
-    <input id="DNI" name="DNI" type="text" placeholder="DNI" class="form-control input-md" required="" value="<?=$valor->DNI?>">
+    <div class="col-md-4">
+    <input id="DNI" name="DNI" type="text" placeholder="DNI" class="form-control input-md" readonly=""  value="<?=$valor->DNI?>">
       
     </div>
+    
   </div>
 
 
   <!-- Text input-->
   <div class="form-group">
     <label class="col-md-4 control-label" for="Correo">Correo</label>  
-    <div class="col-md-5">
+    <div class="col-md-4">
     <input id="Correo" name="Correo" type="text" placeholder="Correo" class="form-control input-md" value="<?=$valor->Correo?>" readonly="readonly">
       
     </div>
+    
   </div>
 
   <!-- Text input-->
   <div class="form-group">
     <label class="col-md-4 control-label" for="Usuario">Nombre de Usuario</label>  
     <div class="col-md-4">
-    <input id="Usuario" name="Usuario" type="text" placeholder="Usuario" class="form-control input-md" required="" value="<?=$valor->Usuario?>" readonly="readonly">
+    <input id="Usuario" name="Usuario" type="text" placeholder="Usuario" class="form-control input-md" value="<?=$valor->Usuario?>" readonly="readonly">
       
     </div>
+    
   </div>
-<!-- Contraseña 
-   <div class="form-group">
-    <label class="col-md-4 control-label" for="Contraseña">Contraseña</label>  
-    <div class="col-md-4">
-    <input id="Contraseña" name="Contraseña" type="password" placeholder="Contraseña" class="form-control input-md" required="" value="<?=$valor->Contraseña?>">
-      
-    </div>
-  </div>
--->
+
 
 
   <!-- Text input-->
@@ -100,6 +101,9 @@
     value="<?=$valor->CP?>">
       
     </div>
+    <div class="col-md-4">
+      <?php  echo form_error('CP');?>
+    </div>
   </div>
 
   <!-- Text input-->
@@ -108,6 +112,9 @@
     <div class="col-md-4">
     <input id="Direccion" name="Direccion" type="text" placeholder="Direccion" class="form-control input-md" value="<?=$valor->Direccion?>">
       
+    </div>
+    <div class="col-md-4">
+      <?php  echo form_error('Direccion');?>
     </div>
   </div>
 

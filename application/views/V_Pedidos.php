@@ -42,7 +42,7 @@
                         
                         <?php if($valor['Estado']!='C'){echo anchor("Inicio/Anular_Pedido/{$valor['idPedidos']}", " ","class='btn btn-danger glyphicon glyphicon-remove'");} ?>
                         
-                        <?= anchor("Inicio/Ver_Pdf/{$valor['idPedidos']}", " ","class='btn btn-danger fa fa-file-pdf-o'") ?>
+                        <?= anchor("Inicio/Genera_Pdf/{$valor['idPedidos']}", " ","class='btn btn-danger fa fa-file-pdf-o'") ?>
 
                            
                           

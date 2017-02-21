@@ -36,11 +36,12 @@
 
                   if(isset($carrito)&& !empty($carrito)){
                   $carro = $carrito->get_content();
-
+                  $precio=0;
+                  $subtotal=0;
                   if($carro)
                   {
                       foreach ($carro as $items):?>
-                              <tr>
+                              <tr id="<?=$items['unique_id']?>">
 
                                
                                   <td class='hidden-xs' align="center"><img src=<?=base_url()?>assets/img/<?=$items['imagen']?>.jpg height='100' width='60'></td>
@@ -49,11 +50,11 @@
                                   <td>
                                     <center>
 
-                                    <?php if($items['cantidad']>1){echo anchor("Inicio/Quitar/{$items['id']}","-","class='btn btn-danger'");} ?>                                      
+                                    <?php if($items['cantidad']>1){echo anchor("Inicio/Quitar/{$items['id']}"," ","class='glyphicon glyphicon-minus'");} ?>                                      
                                     
 
                                       <?=$items['cantidad']?> 
-                                      <?= anchor("Inicio/Comprar/{$items['id']}","+","class='btn btn-danger'");?>
+                                      <?= anchor("Inicio/Comprar/{$items['id']}"," ","class='glyphicon glyphicon-plus '");?>
                                      </center>
    
                                       </td>
@@ -64,7 +65,8 @@
                                         </td>
                                  </tr>
                                        <?php 
-                               
+                               $precio=$items['precio']*$items['cantidad'];
+                                $subtotal=$subtotal+$precio;
                         endforeach;
                     }} ?>
                           
@@ -76,6 +78,18 @@
                   <div class="col col-xs-6 text-right">
                     <?php echo anchor("Inicio/FinalizarCompra","Finalizar Compra","class='btn btn-sm btn-success btn-create'"); ?>
                   </div>
+              </div>
+
+               <div class="panel-heading ">
+                <div class="row ">
+                  <div class="col col-xs-2 pull-right " >
+                    <h3 class="panel-title">SubTotal:<?php echo $subtotal;?></h3>
+                    <h3 class="panel-title">IVA: 21%</h3>
+                    <h3 class="panel-title">Total: <?php echo ($subtotal*0.21)+$subtotal; ?></h3>
+                    
+                  </div>
+                  
+                </div>
               </div>
              
             </div>

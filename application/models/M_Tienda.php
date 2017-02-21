@@ -249,8 +249,13 @@ class M_Tienda extends CI_Model{
 	*/
 	public function Anular_pedido($idPedidos){
 		$this->db->set('Estado', 'C');
+
 		$this->db->where('idPedidos', $idPedidos);
 		$this->db->update('pedidos');
+		
+		
+
+		
 	}
 
 	/*Devuelve el nombre de la provincia.
