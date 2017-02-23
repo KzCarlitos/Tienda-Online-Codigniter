@@ -12,8 +12,11 @@
 			);
 			 
 			$result = $client->ResolveIP($param);
-			 echo "Ciudad: ". $result->ResolveIPResult->City;
-			 echo "Pais: ". $result->ResolveIPResult->Country;
+			
+			echo $result->ResolveIPResult->City;
+			echo $result->ResolveIPResult->Country;
+				
+			 
 			// View the response from CDYNE
 			//print_r ($result);
 

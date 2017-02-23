@@ -1,4 +1,5 @@
 <div class="container">
+<span>Usted nos visita desde: <?php echo $visitado['Ciudad']."-".$visitado['Pais'];?></span>
     <?php foreach ($destacados as $des) : ?>
         <div class="col-md-12">
             <div class="thumbnail col-md-12">

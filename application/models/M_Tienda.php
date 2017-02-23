@@ -103,6 +103,17 @@ class M_Tienda extends CI_Model{
 		$this->db->insert("productos",$datos);
 	}
 
+	public function Aumentar_Stock($idProductos,$cantidad){
+		$this->db->set('Stock',$cantidad);
+		$this->db->where('idProductos',$idProductos);
+		$this->db->update('productos');
+	}
+
+	public function Devuelve_Cantidad($idProductos){
+		$query="select Stock from productos where idProductos= $idProductos;";
+		$stock=$this->db->query($query);
+		return $stock->row();
+	}
 
 	/*-------------------------------------------------------O-------------------------------------------------------------*/
 

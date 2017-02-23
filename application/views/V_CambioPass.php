@@ -53,7 +53,7 @@
     <?php echo validation_errors(); ?>
        <?php if (isset($cambio)): ?>
          <h3>Contraseña Cambiada correctamente.</h3>
-
+         <p>Pincha aqui para ir a la <?=anchor('Inicio/', 'tienda');?><tienda</p>
        <?php endif;  anchor('inicio/Destacado');?>
   </div>
 

@@ -31,6 +31,7 @@
     </div>
   </div>
 <br/>
+
   <!-- Text input-->
   <div class="form-group">
     <label class="col-md-3 control-label" for="Apellidos">Apellidos</label>  
@@ -43,10 +44,11 @@
     </div>
   </div>
 <br/>
+
 <div class="form-group">
     <label class="col-md-3 control-label" for="DNI">DNI</label>  
     <div class="col-md-5">
-    <input id="DNI" name="DNI" type="text" placeholder="DNI" class="form-control input-md" values="<?=set_value('DNI')?>">
+    <input id="DNI" name="DNI" type="text" placeholder="DNI" class="form-control input-md" value="<?=set_value('DNI')?>">
       
     </div>
     <div class="col-md-4">
@@ -55,6 +57,7 @@
   </div>
 
 <br/>
+
   <!-- Text input-->
   <div class="form-group">
     <label class="col-md-3 control-label" for="Correo">Correo</label>  
@@ -67,9 +70,10 @@
     </div>
   </div>
 <br/>
+
   <!-- Text input-->
   <div class="form-group">
-    <label class="col-md-3 control-label" for="Usuario">Nombre de Usuario</label>  
+    <label class="col-md-3 control-label" for="Usuario">Nombre Usuario</label>  
     <div class="col-md-5">
     <input id="Usuario" name="Usuario" type="text" placeholder="Usuario" class="form-control input-md" value="<?=set_value('Usuario')?>">
       
@@ -79,6 +83,7 @@
     </div>
   </div>
 <br/>
+
    <div class="form-group">
     <label class="col-md-3 control-label" for="Contraseña">Contraseña</label>  
     <div class="col-md-5">
@@ -104,6 +109,7 @@
     </div>
   </div>
 <br/>
+
   <!-- Text input-->
   <div class="form-group">
     <label class="col-md-3 control-label" for="Direccion">Direccion</label>  
@@ -116,6 +122,7 @@
     </div>
   </div>
 <br/>
+
   <!-- Select Basic -->
   <div class="form-group">
     <label class="col-md-3 control-label" for="Provincia">Provincia</label>

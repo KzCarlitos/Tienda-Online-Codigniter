@@ -3,7 +3,7 @@ class Inicio extends CI_Controller{
 
 	public function index()
 	{
-	 
+		
 	 $this->load->view('header');
 	 $this->load->view('menu');
 	 $this->load->view('contenido');
@@ -41,12 +41,28 @@ class Inicio extends CI_Controller{
 		
         $this->pagination->initialize($config); //inicializamos la paginación
 
+        $client = new SoapClient('http://ws.cdyne.com/ip2geo/ip2geo.asmx?wsdl');
+        $param = array(
+			 'ipAddress' => $this->input->ip_address(),
+			 'licenseKey' => 0,
+			);
+			 
+			$result = $client->ResolveIP($param);
+			$visitado= array(
+			 'Ciudad'=>$result->ResolveIPResult->City,
+			 'Pais'=>$result->ResolveIPResult->Country
+			 );
 
-		//$this->load->model("M_Tienda","tienda");
+
+		
+		
 		$destacados=$this->tienda->Destacados_P($config['per_page'],$comienzo);
 		
-		$contenido = $this->load->view('V_Destacados', Array('destacados' => $destacados), true);
+		$contenido = $this->load->view('V_Destacados', Array('destacados' => $destacados,'visitado'=>$visitado), true);
 		 	
+		
+			 
+			
 	 	
 	 	$this->cargaVista(Array('contenido' => $contenido));
 
@@ -157,12 +173,12 @@ class Inicio extends CI_Controller{
 		$this->load->model("M_Tienda","tienda");
 
 		// Seguir por aqui no sale los errores 
-		
+		$this->form_validation->set_error_delimiters('<span style="color: red">', '</span>');
 		$this->form_validation->set_rules('Nombre', 'Nombre', 'required');
 		$this->form_validation->set_rules('Apellidos', 'Apellidos', 'required');
 		$this->form_validation->set_rules('DNI', 'DNI', 'required|trim|valid_dni|is_unique[usuarios.DNI]');
-		$this->form_validation->set_rules('Correo', 'Correo', 'required|valid_email|trim');
-		$this->form_validation->set_rules('Usuario', 'Usuario', 'required|is_unique[usuarios.Correo]');
+		$this->form_validation->set_rules('Correo', 'Correo', 'required|valid_email|trim|is_unique[usuarios.Correo]');
+		$this->form_validation->set_rules('Usuario', 'Usuario', 'required|is_unique[usuarios.usuario]');
 		$this->form_validation->set_rules('Contraseña','Contraseña','required|trim');
 		$this->form_validation->set_rules('CP', 'CP', 'required|trim|min_length[5]');
 		$this->form_validation->set_rules('Direccion', 'Direccion', 'required');
@@ -208,9 +224,11 @@ class Inicio extends CI_Controller{
 					 );
 
 				$this->tienda->Insertar_Usuario($Datos);
-				$DatosUser= $this->tienda->Datos_User($user);
+				$DatosUser= $this->tienda->Datos_User($Usuario);
 				$this->session->set_userdata('Usuario_Valido', true);
 				$this->session->set_userdata('Datos_Usuario', $DatosUser);
+				$this->session->set_userdata('idUser',$DatosUser[0]->idUsuarios);
+				//print_r($DatosUser);
 				$this->index();
 		}
 
@@ -220,7 +238,7 @@ class Inicio extends CI_Controller{
 	*/
 	public function Modificar(){
 		$this->load->model("M_Tienda","tienda");
-
+		$this->form_validation->set_error_delimiters('<span style="color: red">', '</span>');
 		$this->form_validation->set_rules('Nombre', 'Nombre', 'required|is_unique[usuarios.Nombre]');
 		$this->form_validation->set_rules('Apellidos', 'Apellidos', 'required');
 		//$this->form_validation->set_rules('DNI', 'DNI', 'required|trim|valid_dni|is_unique[usuarios.DNI]');
@@ -250,8 +268,8 @@ class Inicio extends CI_Controller{
 				$idUsuario=$this->input->post('ID');
 				$Nombre=$this->input->post('Nombre');
 				$Apellidos=$this->input->post('Apellidos');
-				$DNI=$this->input->post('DNI');
-				$Correo=$this->input->post('Correo');
+				//$DNI=$this->input->post('DNI');
+				//$Correo=$this->input->post('Correo');
 				$Usuario=$this->input->post('Usuario');
 				//$Contraseña=$this->input->post('Contraseña');
 				$CP=$this->input->post('CP');
@@ -260,11 +278,7 @@ class Inicio extends CI_Controller{
 
 				$Datos=array(
 					'Nombre' =>$Nombre,
-					'Apellidos'=>$Apellidos,
-					'DNI'=>$DNI,
-					'Correo'=>$Correo,
-					'Usuario'=>$Usuario,
-					
+					'Apellidos'=>$Apellidos,					
 					'CP'=>$CP,
 					'Direccion'=>$Direccion,
 					'idProvincia'=>$Provincia
@@ -274,6 +288,7 @@ class Inicio extends CI_Controller{
 				$DatosUser= $this->tienda->Datos_User($Usuario);
 				$this->session->unset_userdata('Datos_Usuario');
 				$this->session->set_userdata('Datos_Usuario', $DatosUser);
+				$this->session->set_userdata('idUser',$DatosUser[0]->idUsuarios);
 				$this->index();
 		}
 
@@ -505,7 +520,17 @@ class Inicio extends CI_Controller{
 		
 		$this->tienda->Anular_pedido($idPedido);
 		
-		$this->Pedidos();
+		
+
+		$articulos=$this->tienda->Ver_Articulos($idPedido);
+
+                foreach ($articulos as $linea) {
+                	$stock= $this->tienda->Devuelve_Cantidad($linea['idProductos']);
+
+                    $this->tienda->Aumentar_Stock($linea['idProductos'],$stock->Stock+$linea['Cantidad']);
+                }
+
+        $this->Pedidos();
 
 	}
 
